@@ -10,15 +10,15 @@ pub struct ConsistentHash{
 }
 
 impl sort::Interface for ConsistentHash{
-	fn Len(&self) -> usize{
+	fn Len(&self) -> u64{
 		0
 	}
 
-	fn Less(&self, i: usize, j: usize) -> bool{
+	fn Less(&self, i: u64, j: u64) -> bool{
 		true
 	}
 
-	fn Swap(&self, i: usize, j: usize){
+	fn Swap(&mut self, i: u64, j: u64){
 
 	}
 

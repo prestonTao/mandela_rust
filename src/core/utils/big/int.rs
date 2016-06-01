@@ -2,7 +2,7 @@
 use std::cmp;
 
 
-#[derive(Debug)]
+#[derive(Hash, Eq, PartialEq, Debug)]
 pub struct BigInt{
 	neg: bool,         //代表数组正负，true=正;false=负
 	bytes: Vec<u8>,
@@ -225,19 +225,19 @@ impl BigInt{
 	}
 }
 
-impl cmp::PartialEq for BigInt{
-	    fn eq(&self, other: &BigInt) -> bool{
-    	if self.Cmp(other) == 0{
-    		return true;
-    	}
-    	false
-    }
+// impl cmp::PartialEq for BigInt{
+// 	    fn eq(&self, other: &BigInt) -> bool{
+//     	if self.Cmp(other) == 0{
+//     		return true;
+//     	}
+//     	false
+//     }
 
-    fn ne(&self, other: &BigInt) -> bool { !self.eq(other) }
-}
+//     fn ne(&self, other: &BigInt) -> bool { !self.eq(other) }
+// }
 
-impl cmp::Eq for BigInt{
+// impl cmp::Eq for BigInt{
 
-}
+// }
 
 

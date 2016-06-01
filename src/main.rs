@@ -5,12 +5,42 @@ use mandela::core;
 fn main() {
 
 	// bigExample();
-	nodeStoreExample();
+	// nodeStoreExample();
+	sortExample();
 
 }
 
 fn nodeStoreExample(){
 	let mut manager = core::node_store::node_manager::NodeManager::New();
+	let mut node = core::node_store::node::Node::New();
+	manager.Add(node);
+
+}
+
+fn sortExample(){
+	let mut m1 = sort{num: vec![2,5,3]};
+	core::utils::sort::Sort(&mut m1);
+	println!("排序过后的数组： {:?}", m1);
+}
+
+#[derive(Debug)]
+struct sort{
+	num: Vec<u8>,
+}
+
+impl core::utils::sort::Interface for sort{
+	fn Len(&self) -> u64{
+		self.num.len() as u64
+	}                    // Len is the number of elements in the collection.
+	fn Less(&self, i: u64, j: u64) -> bool{
+		//从大到小排序
+		return i > j;
+	}  // index i should sort before the element with index j.
+	fn Swap(&mut self, i: u64, j: u64){
+		let temp = self.num[i as usize];
+		self.num[i as usize] = self.num[j as usize];
+		self.num[j as usize] = temp;
+	}          // Swap swaps the elements with indexes i and j.
 }
 
 
