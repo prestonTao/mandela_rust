@@ -28,7 +28,6 @@ pub fn Sort<T: Interface>(data: &mut T){
 	// 	maxDepth += 1;
 	// }
 	maxDepth *= 2;
-	// println!("---- {}", maxDepth);
 	// let mut a = 0;
 	quickSort(data, 0, n, maxDepth);
 }
@@ -157,11 +156,12 @@ fn insertionSort<T: Interface>(data: &mut T, mut a: u64, b: u64) {
 		}
 		let mut j = i;
 		loop{
-			if !(j > a && data.Less(j, j-1)){
+			if j > a && data.Less(j, j-1){
+				data.Swap(j, j-1);
+				j -= 1;
+			}else{
 				break;
 			}
-			data.Swap(j, j-1);
-			j -= 1;
 		}
 		i += 1;
 	}

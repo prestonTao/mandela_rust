@@ -5,8 +5,8 @@ use mandela::core;
 fn main() {
 
 	// bigExample();
-	// nodeStoreExample();
-	sortExample();
+	// sortExample();
+	nodeStoreExample();
 
 }
 
@@ -18,7 +18,7 @@ fn nodeStoreExample(){
 }
 
 fn sortExample(){
-	let mut m1 = sort{num: vec![2,5,3]};
+	let mut m1 = sort{num: vec![2,5,3, 9, 24, 5, 7, 1, 100]};
 	core::utils::sort::Sort(&mut m1);
 	println!("排序过后的数组： {:?}", m1);
 }
@@ -33,8 +33,9 @@ impl core::utils::sort::Interface for sort{
 		self.num.len() as u64
 	}                    // Len is the number of elements in the collection.
 	fn Less(&self, i: u64, j: u64) -> bool{
+		// println!("{}", self.num[i] > self.num[j]);
 		//从大到小排序
-		return i > j;
+		return self.num[i as usize] > self.num[j as usize];
 	}  // index i should sort before the element with index j.
 	fn Swap(&mut self, i: u64, j: u64){
 		let temp = self.num[i as usize];
