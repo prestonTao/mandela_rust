@@ -6,7 +6,8 @@ use core::utils::sort;
 
 
 pub struct ConsistentHash{
-	nodes: HashSet<BigInt>,
+	// tempnodes: HashSet<BigInt>,
+	nodes:  Vec<BigInt>,// [BigInt; 0],
 }
 
 //
@@ -16,81 +17,42 @@ impl sort::Interface for ConsistentHash{
 	}
 
 	fn Less(&self, i: u64, j: u64) -> bool{
-		// for (index, one) in s.drain().by_ref().take(2).enumerate(){
-		// 	println!("{} {}", index, one);
-		// }
-		let mut index_i = BigInt::New();
-		let mut index_j = BigInt::New();
-		for (index, one) in self.nodes.enumerate() {
-			if index == i{
-				index_i = one;
-				continue;
-			}
-			if index_j == j{
-				index_j = one;
-				continue;
-			}
+		let mut a: &BigInt = &BigInt::New();
+		match self.nodes.get(i as usize).as_mut() {
+		    Some(value) => {
+		    	println!("got a value: {:?}", value);
+		    	a = value;
+			},
+		    None => println!("an error occurred"),
 		}
-		if index_i.Cmp(index_j) > 0 {
+		let mut b: &BigInt = &BigInt::New();
+		match self.nodes.get(j as usize).as_mut() {
+		     Some(value) => b = value,
+		     None => println!("an error occurred"),
+		}
+
+		if a.Cmp(b) > 0i8 {
 			return true;
 		}
 		false
 	}
 
 	fn Swap(&mut self, i: u64, j: u64){
-		let hash: HashSet<BigInt> = HashSet::new();
-		if i > j{
-			let mut index_i = BigInt::New();
-			let mut index_j = BigInt::New();
-			for (index, one) in self.nodes.enumerate() {
-				if index == i{
-					index_i = one;
-					continue;
-				}
-				if index_j == j{
-					index_j = one;
-					continue;
-				}
-			}
-			for (index, one) in (self.nodes).enumerate() {
-			    if index == i{
-			    	match self.nodes.get(i){
-			    		Some(x) => hash.insert(x),
-			    		None => {},
-			    	}
-			    	continue;
-			    }
-			    if index == j{
-			    	match self.nodes.get(j){
-			    		Some(x) => {
-			    			hash.insert(*x);
-			    		},
-			    		None => {
-			    			continue;
-			    		},
-			    	}
-			    	continue;
-			    }
-			    hash.insert(one);
-			}
-		}else{
-
-		}
-		
-		self.nodes = hash;
+		self.nodes.swap(i as usize,j as usize);
 	}
 
 }
 
 impl ConsistentHash{
 	pub fn new() -> ConsistentHash{
-		let hash: HashSet<BigInt> = HashSet::new();
+		// let hash: HashSet<BigInt> = HashSet::new();
 		ConsistentHash{
-			nodes: hash,
+			nodes: vec![],
 		}
 	}
-	pub fn add(&mut self, id: &BigInt){
-		self.nodes.insert(*id);
+	pub fn add(&mut self, id: BigInt){
+		self.nodes.push(id);
+		self.nodes.dedup();
 		sort::Sort(self);
 	}
 }

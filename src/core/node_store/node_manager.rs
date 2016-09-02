@@ -30,6 +30,8 @@ impl NodeManager{
 		}
 	}
 	pub fn Add(&mut self, node: super::node::Node){
-		self.consistenHash.add(node.GetID());
+		let temp = &node;
+		self.Nodes.insert(node.GetID().Format(64), node);
+		self.consistenHash.add(*(temp.GetID()));
 	}
 }
