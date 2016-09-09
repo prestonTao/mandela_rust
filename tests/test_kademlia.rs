@@ -2,18 +2,14 @@ extern crate mandela_rust;
 
 use mandela_rust::core;
 
-fn main() {
+// #[test]
+// fn it_works() {
+//     assert_eq!(4, adder::add_two(2));
+// }
 
-	// bigExample();
-	// sortExample();
-	// nodeStoreExample();
-
-	example();
-
-}
-
-
-fn example(){
+#[test]
+fn test(){
+	let findID = core::utils::big::int::BigInt::NewInt(4);
 
 
 
@@ -31,11 +27,7 @@ fn example(){
 
 	println!("查找目标 {:?}", ch);
 
-	let findID = core::utils::big::int::BigInt::NewInt(4);
 	// let id = findID.Format(10);
 	let result = ch.get("4");
 	println!("找到结果 {:?}", result);
 }
-
-
-

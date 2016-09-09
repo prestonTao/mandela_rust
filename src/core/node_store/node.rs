@@ -1,5 +1,6 @@
 extern crate time;
 extern crate core;
+extern crate crypto;
 use core::utils::big::int::BigInt;
 
 struct IDInfo{
@@ -44,4 +45,21 @@ impl Node{
 	pub fn GetID(&self) -> &BigInt{
 		&self.IDInfo.ID
 	}
+}
+
+
+/*
+	userName      用户名，最大长度100 ""
+	email         email，最大长度100 "example@mail.com"
+	domain        域名地址，最大长度100 "任意utf-8字符串"
+	superNodeId   超级节点id，128位定长 ""
+	superNodeKey  超级节点密钥
+	rerutn idInfo
+	return err
+*/
+
+impl IDInfo{
+	// pub fn New(name: &str, email: &str, domain: &str, superNodeId: &str) -> IDInfo{
+
+	// }
 }
