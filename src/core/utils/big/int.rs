@@ -220,6 +220,7 @@ impl BigInt{
 				}
 			},
 			10 => super::parse::formatTo10(&self.bytes, self.neg),
+			16 => super::parse::formatTo16(&self.bytes, self.neg),
 			_ => "".to_string(),
 		}
 	}

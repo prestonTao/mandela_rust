@@ -171,20 +171,25 @@ pub fn cmp(src: &Vec<u8>, dst: &Vec<u8>) -> i8{
 	let mut dstBytes: Vec<u8> = copy(dst);
 	cleanZero(&mut srcBytes);
 	cleanZero(&mut dstBytes);
+	// println!("{} {}", srcBytes.len(), dstBytes.len());
 	if srcBytes.len() > dstBytes.len(){
 		return 1;
 	}else if srcBytes.len() < dstBytes.len(){
 		return -1;
 	}else{
-		let mut index = 0;
-		for one in srcBytes{
-			let dstOne = dstBytes[index];
-			if one > dstOne{
+		// println!("{:?}\n{:?}", &srcBytes, &dstBytes);
+		let mut index = srcBytes.len();
+		while index > 0 {
+			// println!("{}", index);
+			let srcOne = srcBytes[index-1];
+			let dstOne = dstBytes[index-1];
+			// println!("{} {}", srcOne, dstOne);
+			if srcOne > dstOne{
 				return 1;
-			}else if one < dstOne{
+			}else if srcOne < dstOne{
 				return -1;
 			}
-			index += 1;
+			index -= 1;
 		}
 		return 0;
 	}

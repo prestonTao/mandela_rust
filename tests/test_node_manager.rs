@@ -2,17 +2,11 @@ extern crate mandela_rust;
 
 use mandela_rust::core;
 
-fn main() {
 
 
-	example();
-
-}
-
-
-fn example(){
-
-
+#[test]
+fn bigExample(){
+	
 	let idinforoot = core::node_store::node::IDInfo::new("tao", "tao@126.com", "mandela", "34ed23f3a4609c");
 	println!("id {}", &idinforoot.ID.Format(16));
 	let root = core::node_store::node::Node::new(idinforoot, true, "127.0.0.1", 9981, 19981);
@@ -55,12 +49,7 @@ fn example(){
 		let mut idcopy = id.Copy();
 		let rootid = core::node_store::node::IDInfo::new("tao4", "tao@126.com", "github", "34ed23f3a4609c").ID;
 		idcopy.Xor(&rootid);
-		println!("找到 {}", &id.Format(16));
+		println!("找到 {}\n距离 {}", &id.Format(16), idcopy.Format(10));
 	}
-
-	println!("---------------------------------\n");
-
 }
-
-
 

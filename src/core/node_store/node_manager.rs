@@ -2,7 +2,7 @@
 //extern crate std::string;
 // extern crate std;
 // use std::time::Duration;
-
+extern crate core;
 
 use std::collections::HashMap;
 use std::cell::RefCell;
@@ -10,15 +10,16 @@ use std::sync::RwLock;
 use std::sync::Arc;
 use std::sync::RwLockReadGuard;
 // use core::ops::Deref;
+use core::utils::big::parse;
 
 
-pub const IDbit: u8 = 10; 
+pub const IDbit: u8 = 16; 
 
 
 
 pub struct NodeManager{
 	// SpacingInterval: i32,//超级节点之间查询的间隔时间
-	Root:            super::node::Node, //本节点信息
+	Root:            Arc<RwLock<super::node::Node>>, //本节点信息
 	// IsNew:           bool,         //是否是新节点
 	nodes:           RwLock<HashMap<String, Arc<RwLock<super::node::Node>>>>,//超级节点，id符串为键
 	Proxys:          RwLock<HashMap<String, Arc<RwLock<super::node::Node>>>>,//被代理的节点，id字符串为键
@@ -26,11 +27,13 @@ pub struct NodeManager{
 }
 
 impl NodeManager{
-	pub fn New() -> NodeManager{
+	pub fn New(root: super::node::Node) -> NodeManager{
 		// let rwMap = HashMap::new();
+		let rwNode = RwLock::new(root);
+		let arcNode = Arc::new(rwNode);
 		NodeManager{
 			// SpacingInterval: 15,
-			Root: super::node::Node::New(),
+			Root: arcNode,
 			// IsNew: false,
 			nodes: RwLock::new(HashMap::new()),
 			Proxys: RwLock::new(HashMap::new()),
@@ -45,7 +48,7 @@ impl NodeManager{
 		let rwNode = RwLock::new(node);
 		let arcNode = Arc::new(rwNode);
 		let arcNodeTwo = arcNode.clone();
-		self.Proxys.write().unwrap().insert(arcNodeTwo.read().unwrap().GetID().Format(IDbit).to_string(), arcNode);
+		self.Proxys.write().unwrap().insert(arcNodeTwo.read().unwrap().getID().Format(IDbit).to_string(), arcNode);
 	}
 
 	/*
@@ -76,7 +79,7 @@ impl NodeManager{
 		let rwNode = RwLock::new(node);
 		let arcNode = Arc::new(rwNode);
 		let arcNodeTwo = arcNode.clone();
-		self.nodes.write().unwrap().insert(arcNodeTwo.read().unwrap().GetID().Format(IDbit).to_string(), arcNode);
+		self.nodes.write().unwrap().insert(arcNodeTwo.read().unwrap().getID().Format(IDbit).to_string(), arcNode);
 	}
 
 	/*
@@ -95,31 +98,46 @@ impl NodeManager{
 		@return         获得数量
 	*/
 	pub fn Get(&self, nodeId: &str, includeSelf: bool, outId: &str, num: u32) -> Vec<Arc<RwLock<super::node::Node>>> {
+		let node = parse::ParseInt(nodeId.to_string(), IDbit);
 		let mut kd = super::kademlia::Kademlia::new();
 		if includeSelf{
-			kd.add(self.Root.GetID().Copy());
+			let temp = self.Root.clone();
+			kd.add(temp.read().unwrap().getID().Copy());
 		}
 		for (key, value) in self.nodes.read().unwrap().iter() {
 			let a = value.clone();
-			let b = a.read().unwrap().GetID().Copy();
+			let b = a.read().unwrap().getID().Copy();
 			if !includeSelf {
-				if b.Copy().Cmp(&self.Root.GetID()) == 0{
+				let temp = self.Root.clone();
+				if b.Copy().Cmp(&temp.read().unwrap().getID()) == 0{
 					continue
 				}
+			}
+			if &b.Format(IDbit) == outId{
+				continue
 			}
 			kd.add(b);
 		}
 
-		let nodeids = kd.get(nodeId);
+		let nodeids = kd.get(node);
+		// println!("{:?}", nodeids);
 		let mut result: Vec<Arc<RwLock<super::node::Node>>> = vec![];
 		result.reserve(num as usize);
 		for i in 0..num {
 			match nodeids.get(i as usize){
 				Some(x) => {
 					let nodes = self.nodes.read().unwrap();
+					// println!("hashmap长度 {}", nodes.len());
 					match nodes.get(&x.Format(IDbit)){
 						None => {
+							//可能是root节点
+							let temp = self.Root.clone();
+							if temp.read().unwrap().getID().Format(16) == x.Format(16){
+								result.push(self.Root.clone());
+								continue;
+							}
 							//TODO 找不到后，返回结果长度变少，应该补上
+							// println!("找不到 {}", i);
 							continue;
 						},
 						Some(x) => {
