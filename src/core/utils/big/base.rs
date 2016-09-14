@@ -29,11 +29,11 @@ pub fn lsh(src: &Vec<u8>, num: u64) -> Vec<u8>{
 	let indexMajor = num / 8;
 	let indexMinor = (num % 8) as u8;
 	//低位补零
+	let len = src.len();
 	for i in 0..indexMajor{
 		newBytes.push(0);
 	}
 	
-	let len = src.len();
 	let mut index = 0;
 	let mut fill: u8 = 0;
 	for one in src{
@@ -76,16 +76,24 @@ fn lsh_byte(num: u8, left: u8, fill: u8) -> (u8, u8) {
 */
 pub fn rsh(src: &Vec<u8>, num: u64) -> Vec<u8>{
 	let mut newBytes: Vec<u8> = Vec::new();
+	if src.len()*8 <= num as usize{
+		newBytes.push(0);
+		return newBytes;
+	}
 	let indexMajor = (num / 8) as usize;
 	let indexMinor = num % 8;
+
+	// println!("indexMajor {} indexMinor {}", indexMajor, indexMinor);
 
 
 	let len = src.len();
 	let mut index = len;
 	let mut fill: u8 = 0;
 	loop{
-		let (newByte, overflow) = rsh_byte(src[index-1], indexMinor, fill);
-		newBytes.push(newByte);
+		// println!("src[index-1] {}", src[index-1]);
+		let (new, overflow) = rsh_byte(src[index-1], indexMinor, fill);
+		// println!("new {:?} overflow {}", new, overflow);
+		newBytes.push(new);
 		fill = overflow;
 		index -= 1;
 		if index <= indexMajor {
@@ -536,6 +544,30 @@ pub fn and(src: &Vec<u8>, dst: &Vec<u8>) -> Vec<u8>{
 
 	for i in 0..maxLen{
 		newBytes.push(srcBytes[i] & dstBytes[i]);
+	}
+	cleanZero(&mut newBytes);
+	newBytes
+}
+
+/*
+	或操作
+	z = x | y;
+*/
+pub fn or(src: &Vec<u8>, dst: &Vec<u8>) -> Vec<u8>{
+	let mut newBytes: Vec<u8> = Vec::new();
+	let mut srcBytes: Vec<u8> = copy(src);
+	let mut dstBytes: Vec<u8> = copy(dst);
+	let mut maxLen = 0;
+	if src.len() > dst.len(){
+		maxLen = src.len();
+		dstBytes = fillComplement(&dstBytes, maxLen, true);
+	}else{
+		maxLen = dst.len();
+		srcBytes = fillComplement(&srcBytes, maxLen, true);
+	}
+
+	for i in 0..maxLen{
+		newBytes.push(srcBytes[i] | dstBytes[i]);
 	}
 	cleanZero(&mut newBytes);
 	newBytes

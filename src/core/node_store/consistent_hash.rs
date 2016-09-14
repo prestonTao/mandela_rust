@@ -17,7 +17,7 @@ impl sort::Interface for ConsistentHash{
 	}
 
 	fn Less(&self, i: u64, j: u64) -> bool{
-		let mut a: &BigInt = &BigInt::New();
+		let mut a: &BigInt = &BigInt::new();
 		match self.nodes.get(i as usize).as_mut() {
 		    Some(value) => {
 		    	// println!("got a value: {:?}", value);
@@ -25,13 +25,13 @@ impl sort::Interface for ConsistentHash{
 			},
 		    None => println!("an error occurred"),
 		}
-		let mut b: &BigInt = &BigInt::New();
+		let mut b: &BigInt = &BigInt::new();
 		match self.nodes.get(j as usize).as_mut() {
 		     Some(value) => b = value,
 		     None => println!("an error occurred"),
 		}
 
-		if a.Cmp(b) > 0i8 {
+		if a.cmp(b) > 0i8 {
 			return false;
 		}
 		true
@@ -73,7 +73,7 @@ impl ConsistentHash{
 			match self.nodes.get(0){
 				Some(x) => {
 					// println!("x: {:?}", x);
-					return Some(x.Copy());
+					return Some(x.copy());
 				},
 				None => {
 					return None;
@@ -85,7 +85,7 @@ impl ConsistentHash{
 		for one in &self.nodes{
 			
 
-			match id.Cmp(&one){
+			match id.cmp(&one){
 				0 => {
 					return Some(id);
 				},
@@ -95,14 +95,14 @@ impl ConsistentHash{
 						println!("1111111111111111111");
 						match self.nodes.get(0){
 							Some(x) => {
-								let mut left = id.Copy();
-								left.Xor(one);
-								let mut right = id.Copy();
-								right.Xor(x);
-								match left.Cmp(&right){
-									0 => {return Some(one.Copy());},
-									-1 => {return Some(one.Copy());},
-									1 => {return Some(x.Copy());},
+								let mut left = id.copy();
+								left.xor(one);
+								let mut right = id.copy();
+								right.xor(x);
+								match left.cmp(&right){
+									0 => {return Some(one.copy());},
+									-1 => {return Some(one.copy());},
+									1 => {return Some(x.copy());},
 									_ => {return None;},
 								}
 								// return Some(x.Copy());
@@ -116,16 +116,16 @@ impl ConsistentHash{
 						println!("22222222222222222");
 						match self.nodes.get(count + 1){
 							Some(x) => {
-								let mut left = id.Copy();
-								left.Xor(one);
+								let mut left = id.copy();
+								left.xor(one);
 								println!("id  {:?}  one  {:?}  result  {:?}", id, one, left);
-								let mut right = id.Copy();
-								right.Xor(x);
+								let mut right = id.copy();
+								right.xor(x);
 								println!("left {:?} right {:?}", &left, &right);
-								match left.Cmp(&right){
-									0 => {return Some(one.Copy());},
-									-1 => {return Some(one.Copy());},
-									1 => {return Some(x.Copy());},
+								match left.cmp(&right){
+									0 => {return Some(one.copy());},
+									-1 => {return Some(one.copy());},
+									1 => {return Some(x.copy());},
 									_ => {return None;},
 								}
 								// return Some(x.Copy());
@@ -143,14 +143,14 @@ impl ConsistentHash{
 						println!("333333333333333333");
 						match self.nodes.get(length - 1){
 							Some(x) => {
-								let mut left = id.Copy();
-								left.Xor(x);
-								let mut right = id.Copy();
-								right.Xor(one);
-								match left.Cmp(&right){
-									0 => {return Some(x.Copy());},
-									-1 => {return Some(x.Copy());},
-									1 => {return Some(one.Copy());},
+								let mut left = id.copy();
+								left.xor(x);
+								let mut right = id.copy();
+								right.xor(one);
+								match left.cmp(&right){
+									0 => {return Some(x.copy());},
+									-1 => {return Some(x.copy());},
+									1 => {return Some(one.copy());},
 									_ => {return None;},
 								}
 								// return Some(x.Copy());

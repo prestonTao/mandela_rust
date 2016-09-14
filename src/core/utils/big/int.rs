@@ -4,30 +4,38 @@ use std::cmp;
 
 #[derive(Hash, Eq, PartialEq, Debug)]
 pub struct BigInt{
-	neg: bool,         //代表数组正负，true=正;false=负
-	bytes: Vec<u8>,
+	neg:     bool,         //代表数组正负，true=正;false=负
+	bytes:   Vec<u8>,
 }
 
 impl BigInt{
-	pub fn New() -> BigInt{
+	pub fn new() -> BigInt{
 		BigInt{neg: true, bytes: Vec::new()}
 	}
 
-	pub fn NewInt(num: i64) -> BigInt{
+	pub fn newInt(num: i64) -> BigInt{
 		let neg = if num>=0 {true}else{false};
 		let tempNum = if num>=0{num}else{-num};
 		BigInt{neg:neg, bytes: super::base::toVecU8(tempNum as u64)}
 	}
-	pub fn SetNeg(&mut self, neg: bool){
+	pub fn setNeg(&mut self, neg: bool){
 		self.neg = neg;
 	}
-	pub fn SetBytes(&mut self, bs: Vec<u8>){
+	pub fn setBytes(&mut self, bs: Vec<u8>){
 		self.bytes = bs;
+	}
+	
+	pub fn getNeg(&self) -> bool{
+		self.neg
+	}
+
+	pub fn getBytes(&self) -> &Vec<u8>{
+		&self.bytes
 	}
 	/*
 		拷贝一个一样大的数
 	*/
-	pub fn Copy(&self) -> BigInt{
+	pub fn copy(&self) -> BigInt{
 		BigInt{neg: self.neg, bytes : super::base::copy(&self.bytes)}
 	}
 
@@ -35,24 +43,36 @@ impl BigInt{
 	/*
 		取反操作
 	*/
-	pub fn Not(&mut self){
+	pub fn not(&mut self){
 		self.bytes = super::base::not(&self.bytes);
 	}
 
 	/*
 		向左移位
 	*/
-	pub fn Lsh(&mut self, num: u64){
+	pub fn lsh(&mut self, num: u64){
 		self.bytes = super::base::lsh(&self.bytes, num);
 	}
 	/*
 		向右移位
 	*/
-	pub fn Rsh(&mut self, num: u64){
+	pub fn rsh(&mut self, num: u64){
 		self.bytes = super::base::rsh(&self.bytes, num);
 	}
+	/*
+		与运算
+	*/
+	pub fn and(&mut self, dst: &BigInt){
+		self.bytes = super::base::and(&self.bytes, &dst.bytes);
+	}
+	/*
+		或运算
+	*/
+	pub fn or(&mut self, dst: &BigInt){
+		self.bytes = super::base::or(&self.bytes, &dst.bytes);
+	}
 
-	pub fn Xor(&mut self, dst: &BigInt){
+	pub fn xor(&mut self, dst: &BigInt){
 		// let mut dstBytes = dst.bytes;
 		if self.neg {
 			if dst.neg{
@@ -69,7 +89,7 @@ impl BigInt{
 		}
 	}
 
-	pub fn Cmp(&self, dst: &BigInt) -> i8{
+	pub fn cmp(&self, dst: &BigInt) -> i8{
 		if self.neg == dst.neg{
 			if self.neg{
 				return super::base::cmp(&self.bytes, &dst.bytes);
@@ -90,7 +110,7 @@ impl BigInt{
 		进位为1；同为0时，本位进位均为0.所以，不计进位的和为sum = a^b，进位就是arr = a&b,(与sum相加时先
 		左移一位，因为这是进位）。完成加法直到进位为0.
 	*/
-	pub fn Add(&mut self, dst: &BigInt){
+	pub fn add(&mut self, dst: &BigInt){
 		if self.neg == dst.neg{
 			self.bytes = super::base::add(&self.bytes, &dst.bytes);
 		}else if self.neg{
@@ -127,7 +147,7 @@ impl BigInt{
 		减法运算
 		http://blog.csdn.net/gaoyongxing/article/details/4246956
 	*/
-	pub fn Sub(&mut self, dst: &BigInt){
+	pub fn sub(&mut self, dst: &BigInt){
 		if self.neg == dst.neg{
 			match super::base::cmp(&self.bytes, &dst.bytes){
 				0 => {
@@ -175,7 +195,7 @@ impl BigInt{
 	/*
 		乘法运算
 	*/
-	pub fn Mul(&mut self, dst: &BigInt){
+	pub fn mul(&mut self, dst: &BigInt){
 		let mut neg = true;
 		if !self.neg{
 			neg = !neg;
@@ -190,7 +210,7 @@ impl BigInt{
 	/*
 		除法运算
 	*/
-	pub fn Div(&mut self, dst: &BigInt){
+	pub fn div(&mut self, dst: &BigInt){
 		let (value, remainder) = super::base::div(&self.bytes, &dst.bytes);
 		self.bytes = value;
 	}
@@ -199,7 +219,7 @@ impl BigInt{
 	/*
 		获得余数
 	*/
-	pub fn Mod(&mut self, dst: &BigInt){
+	pub fn model(&mut self, dst: &BigInt){
 		let (value, remainder) = super::base::div(&self.bytes, &dst.bytes);
 		self.bytes = remainder;
 	}
@@ -210,7 +230,7 @@ impl BigInt{
 		格式化输出
 		@format    u8    输出格式，2=2进制，10=10进制，64=base64格式
 	*/
-	pub fn Format(&self, format: u8) -> String {
+	pub fn format(&self, format: u8) -> String {
 		match format{
 			2 => {
 				if self.neg{

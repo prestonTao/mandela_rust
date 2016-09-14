@@ -21,30 +21,30 @@ impl sort::Interface for Kademlia{
 	}
 
 	fn Less(&self, i: u64, j: u64) -> bool{
-		let mut a = BigInt::New();
+		let mut a = BigInt::new();
 		match self.nodes.get(i as usize).as_mut() {
 		    Some(value) => {
 		    	// println!("got a value: {:?}", &value.Format(16));
-		    	a = value.Copy();
+		    	a = value.copy();
 			},
 		    None => println!("an error occurred"),
 		}
-		let mut b = BigInt::New();
+		let mut b = BigInt::new();
 		match self.nodes.get(j as usize).as_mut() {
-		     Some(value) => b = value.Copy(),
+		     Some(value) => b = value.copy(),
 		     None => println!("an error occurred"),
 		}
 
 		// let rootBI = parse::ParseInt(self.find.to_string(), super::node_manager::IDbit);
 		// let mut c = *a;
 		// println!("a {}\nb {}", a.Copy().Format(16), b.Copy().Format(16));
-		a.Xor(&self.find);
-		b.Xor(&self.find);
+		a.xor(&self.find);
+		b.xor(&self.find);
 
 		// println!("a距离 {}\nb距离 {}", a.Copy().Format(10), b.Copy().Format(10));
 
 
-		if a.Cmp(&b) > 0i8 {
+		if a.cmp(&b) > 0i8 {
 			// println!("a 大");
 			false
 		}else{
@@ -63,7 +63,7 @@ impl Kademlia{
 	pub fn new() -> Kademlia{
 		// let hash: HashSet<BigInt> = HashSet::new();
 		Kademlia{
-			find: BigInt::New(),
+			find: BigInt::new(),
 			nodes: vec![],
 		}
 	}

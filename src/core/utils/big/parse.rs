@@ -13,14 +13,14 @@ pub fn ParseInt(s: String, format: u8) -> super::int::BigInt {
 		10 => parseFor10(s),
 		16 => parseFor16(s),
 		_ => {
-			super::int::BigInt::New()
+			super::int::BigInt::new()
 		}
 	}
 
 }
 
 fn parseFor2(s: String) -> super::int::BigInt {
-	let mut big = super::int::BigInt::New();
+	let mut big = super::int::BigInt::new();
 	if s == ""{
 		return big;
 	}
@@ -39,7 +39,7 @@ fn parseFor2(s: String) -> super::int::BigInt {
 			if &s[0..1] == "0"{
 				fillStr = "0".to_string();
 			}else{
-				big.SetNeg(false);
+				big.setNeg(false);
 				fillStr = "0".to_string();
 			}
 			let mut tempStr = "".to_string();
@@ -58,13 +58,13 @@ fn parseFor2(s: String) -> super::int::BigInt {
 		}
 	}
 	// bytes.reverse();
-	big.SetBytes(bytes);
+	big.setBytes(bytes);
 	big
 }
 
 
 fn parseFor10(s: String) -> super::int::BigInt {
-	let mut bigInt = super::int::BigInt::New();
+	let mut bigInt = super::int::BigInt::new();
 	if s == ""{
 		return bigInt;
 	}
@@ -75,7 +75,7 @@ fn parseFor10(s: String) -> super::int::BigInt {
 	loop{
 		if index >= length-1{
 			if &s[0..1] == "-"{
-				bigInt.SetNeg(false);
+				bigInt.setNeg(false);
 				break;
 			}
 		}
@@ -110,7 +110,7 @@ fn parseFor10(s: String) -> super::int::BigInt {
 				newBytes = super::base::add(&newBytes, &super::base::mul(&temp, &vec![9]));
 			},
 			_ => {
-				return super::int::BigInt::New();
+				return super::int::BigInt::new();
 			},
 		}
 		index += 1;
@@ -119,13 +119,13 @@ fn parseFor10(s: String) -> super::int::BigInt {
 		}
 		temp = super::base::mul(&temp, &vec![10]);
 	}
-	bigInt.SetBytes(newBytes);
+	bigInt.setBytes(newBytes);
 	bigInt
 }
 
 
 fn parseFor16(s: String) -> super::int::BigInt {
-	let mut bigInt = super::int::BigInt::New();
+	let mut bigInt = super::int::BigInt::new();
 	if s == ""{
 		return bigInt;
 	}
@@ -165,7 +165,7 @@ fn parseFor16(s: String) -> super::int::BigInt {
 		}
 	}
 	newBytes.reverse();
-	bigInt.SetBytes(newBytes);
+	bigInt.setBytes(newBytes);
 	bigInt
 }
 

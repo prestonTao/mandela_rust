@@ -11,6 +11,7 @@ use std::sync::Arc;
 use std::sync::RwLockReadGuard;
 // use core::ops::Deref;
 use core::utils::big::parse;
+use core::utils::big::int::BigInt;
 
 
 pub const IDbit: u8 = 16; 
@@ -48,7 +49,7 @@ impl NodeManager{
 		let rwNode = RwLock::new(node);
 		let arcNode = Arc::new(rwNode);
 		let arcNodeTwo = arcNode.clone();
-		self.Proxys.write().unwrap().insert(arcNodeTwo.read().unwrap().getID().Format(IDbit).to_string(), arcNode);
+		self.Proxys.write().unwrap().insert(arcNodeTwo.read().unwrap().getID().format(IDbit).to_string(), arcNode);
 	}
 
 	/*
@@ -79,7 +80,7 @@ impl NodeManager{
 		let rwNode = RwLock::new(node);
 		let arcNode = Arc::new(rwNode);
 		let arcNodeTwo = arcNode.clone();
-		self.nodes.write().unwrap().insert(arcNodeTwo.read().unwrap().getID().Format(IDbit).to_string(), arcNode);
+		self.nodes.write().unwrap().insert(arcNodeTwo.read().unwrap().getID().format(IDbit).to_string(), arcNode);
 	}
 
 	/*
@@ -102,18 +103,18 @@ impl NodeManager{
 		let mut kd = super::kademlia::Kademlia::new();
 		if includeSelf{
 			let temp = self.Root.clone();
-			kd.add(temp.read().unwrap().getID().Copy());
+			kd.add(temp.read().unwrap().getID().copy());
 		}
 		for (key, value) in self.nodes.read().unwrap().iter() {
 			let a = value.clone();
-			let b = a.read().unwrap().getID().Copy();
+			let b = a.read().unwrap().getID().copy();
 			if !includeSelf {
 				let temp = self.Root.clone();
-				if b.Copy().Cmp(&temp.read().unwrap().getID()) == 0{
+				if b.copy().cmp(&temp.read().unwrap().getID()) == 0{
 					continue
 				}
 			}
-			if &b.Format(IDbit) == outId{
+			if &b.format(IDbit) == outId{
 				continue
 			}
 			kd.add(b);
@@ -128,11 +129,11 @@ impl NodeManager{
 				Some(x) => {
 					let nodes = self.nodes.read().unwrap();
 					// println!("hashmap长度 {}", nodes.len());
-					match nodes.get(&x.Format(IDbit)){
+					match nodes.get(&x.format(IDbit)){
 						None => {
 							//可能是root节点
 							let temp = self.Root.clone();
-							if temp.read().unwrap().getID().Format(16) == x.Format(16){
+							if temp.read().unwrap().getID().format(16) == x.format(16){
 								result.push(self.Root.clone());
 								continue;
 							}
@@ -149,5 +150,30 @@ impl NodeManager{
 			}
 		}
 		result
+	}
+
+	/*
+		得到每个节点网络的网络号，不包括本节点
+	*/
+	pub fn getNetworkNum(&self) -> Vec<BigInt>{
+		let mut nums: Vec<BigInt> = Vec::new();
+		let temp = self.Root.clone();
+		let temp = temp.read().unwrap();
+		for i in 1..513 {
+			let mut src = temp.getID().copy();
+			let mut temp = src.copy();
+			let mut dst = BigInt::newInt(1);
+			dst.lsh(i-1);
+			temp.and(&dst);
+			src.rsh(i);
+			src.lsh(i);
+			if temp.cmp(&BigInt::newInt(0)) == 0{
+				let mut temp = BigInt::newInt(1);
+				temp.lsh(i-1);
+				src.or(&temp);
+			}
+			nums.push(src);
+		}
+		nums
 	}
 }	

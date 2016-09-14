@@ -51,5 +51,7 @@ fn bigExample(){
 		idcopy.Xor(&rootid);
 		println!("找到 {}\n距离 {}", &id.Format(16), idcopy.Format(10));
 	}
+
+	manager.getNetworkNum();
 }
 
