@@ -2,7 +2,7 @@
 //extern crate std::string;
 // extern crate std;
 // use std::time::Duration;
-extern crate core;
+// extern crate core;
 
 use std::collections::HashMap;
 use std::cell::RefCell;
@@ -10,8 +10,8 @@ use std::sync::RwLock;
 use std::sync::Arc;
 use std::sync::RwLockReadGuard;
 // use core::ops::Deref;
-use core::utils::big::parse;
-use core::utils::big::int::BigInt;
+use super::super::utils::big::parse;
+use super::super::utils::big::int::BigInt;
 
 
 pub const IDbit: u8 = 16; 

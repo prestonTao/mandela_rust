@@ -2,10 +2,11 @@
 name = "mandela_rust"
 version = "0.1.0"
 authors = ["Preston <taopopoo@126.com>"]
+edition = "2018"
 
 [dependencies]
 time = "0.1.0"
 rust-crypto = "0.2"
 rustc-serialize = "0.3.19"
 net2 = "*"
-
+tokio = { version = "0.2", features = ["full"] }

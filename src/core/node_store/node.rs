@@ -1,10 +1,10 @@
 extern crate time;
-extern crate core;
+// extern crate core;
 extern crate crypto;
 extern crate rustc_serialize;
 
-use core::utils::big::parse;
-use core::utils::big::int::BigInt;
+use super::super::utils::big::parse;
+use super::super::utils::big::int::BigInt;
 use self::crypto::sha3;
 use self::crypto::digest::Digest;
 use self::rustc_serialize::hex::ToHex;

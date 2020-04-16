@@ -1,8 +1,8 @@
 
-extern crate core;
+// extern crate core;
 use std::collections::HashSet;
-use core::utils::big::int::BigInt;
-use core::utils::sort;
+use super::super::utils::big::int::BigInt;
+use super::super::utils::sort;
 
 #[derive(Hash, Eq, PartialEq, Debug)]
 pub struct ConsistentHash{
